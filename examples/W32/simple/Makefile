@@ -6,7 +6,7 @@ APP = w32_simple
 all: $(APP)
 
 $(APP): main.c	
-	$(CC) -o $(APP) $(CFLAGS) -g main.c
+	$(CC) main.c -o $(APP) $(CFLAGS) -g
 	
 clean:
 	rm -f *.o ; rm $(APP)

@@ -32,17 +32,14 @@ void quit()
 	exit(1);
 }
 
-int main(int argc, char *argv[])
+int main(void)
 {
-	char 	cBufWrite[BUF_SIZE];
 	char * 	pcBufRead = NULL;
 	char * 	pcBufLD[MAX_DEVICES + 1];
 	char 	cBufLD[MAX_DEVICES][64];
-	DWORD	dwRxSize = 0;
-	DWORD 	dwBytesWritten, dwBytesRead;
 	FT_STATUS	ftStatus;
 	int	iNumDevs = 0;
-	int	i, j;
+	int	i;
 	int	iDevicesOpen;
 	FTDCB ftDCB;
 		
@@ -57,9 +54,6 @@ int main(int argc, char *argv[])
 	if(ftStatus != FT_OK) {
 		printf("Error: FT_ListDevices(%d)\n", ftStatus);
 		return 1;
-	}
-	for(j = 0; j < BUF_SIZE; j++) {
-		cBufWrite[j] = j;
 	}
 	
 	for(i = 0; ( (i <MAX_DEVICES) && (i < iNumDevs) ); i++) {

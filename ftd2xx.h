@@ -41,6 +41,10 @@ kernel & user mode
 #ifndef FTD2XX_H
 #define FTD2XX_H
 
+#ifdef _WIN32
+// Compiling on Windows
+#include <windows.h>
+
 // The following ifdef block is the standard way of creating macros
 // which make exporting from a DLL simpler.  All files within this DLL
 // are compiled with the FTD2XX_EXPORTS symbol defined on the command line.
@@ -51,24 +55,20 @@ kernel & user mode
 
 #ifdef FTD2XX_EXPORTS
 #define FTD2XX_API __declspec(dllexport)
+#elif defined(FTD2XX_STATIC)
+// Avoid decorations when linking statically to D2XX.
+#define FTD2XX_API
 #else
 #define FTD2XX_API __declspec(dllimport)
 #endif
 
-#ifndef _WINDOWS
-#include <pthread.h>
+#else // _WIN32
+// Compiling on non-Windows platform.
 #include "WinTypes.h"
-/** Substitute for HANDLE returned by Windows CreateEvent API */
-typedef struct _EVENT_HANDLE{
-	pthread_cond_t eCondVar;
-	pthread_mutex_t eMutex;
-	int iVar;
-} EVENT_HANDLE;
-#ifdef FTD2XX_API
-#undef FTD2XX_API
+// No decorations needed.
 #define FTD2XX_API
-#endif /* FTD2XX_API */
-#endif /* _WINDOWS */
+
+#endif // _WIN32
 
 typedef PVOID	FT_HANDLE;
 typedef ULONG	FT_STATUS;
@@ -216,7 +216,11 @@ enum {
 	FT_DEVICE_2232H,
 	FT_DEVICE_4232H,
 	FT_DEVICE_232H,
-	FT_DEVICE_X_SERIES
+	FT_DEVICE_X_SERIES,
+	FT_DEVICE_4222H_0,
+	FT_DEVICE_4222H_1_2,
+	FT_DEVICE_4222H_3,
+    FT_DEVICE_4222_PROG,
 };
 
 //
@@ -273,8 +277,8 @@ enum {
 //
 
 #define FT_X_SERIES_CBUS_TRISTATE			0x00	//	Tristate
-#define FT_X_SERIES_CBUS_RXLED				0x01	//	Tx LED
-#define FT_X_SERIES_CBUS_TXLED				0x02	//	Rx LED
+#define FT_X_SERIES_CBUS_TXLED				0x01	//	Tx LED
+#define FT_X_SERIES_CBUS_RXLED				0x02	//	Rx LED
 #define FT_X_SERIES_CBUS_TXRXLED			0x03	//	Tx and Rx LED
 #define FT_X_SERIES_CBUS_PWREN				0x04	//	Power Enable
 #define FT_X_SERIES_CBUS_SLEEP				0x05	//	Sleep
@@ -997,18 +1001,16 @@ extern "C" {
 		ULONG ulOutTransferSize
 		);
 
-#ifdef _WINDOWS
 	FTD2XX_API
 		FT_STATUS WINAPI FT_SetDeadmanTimeout(
 		FT_HANDLE ftHandle,
 		ULONG ulDeadmanTimeout
 		);
-#else
-	/* Linux, Mac etc. define FT_SetDeadmanTimeout differently elsewhere. */
-	
-	/* Linux etc. offer extra functions to compensate for lack of .INF file
-	 * to specify VID+PID combinations.
-	 */
+
+#ifndef _WIN32
+	// Extra functions for non-Windows platforms to compensate
+	// for lack of .INF file to specify Vendor and Product IDs.
+
 	FTD2XX_API
 		FT_STATUS FT_SetVIDPID(
 		DWORD dwVID, 
@@ -1026,8 +1028,8 @@ extern "C" {
 		FT_HANDLE ftHandle,
 		LPDWORD lpdwLocId
 		);
-#endif /* _WINDOWS */		
-		
+#endif // _WIN32        
+
 	FTD2XX_API
 		FT_STATUS WINAPI FT_GetDeviceInfo(
 		FT_HANDLE ftHandle,
@@ -1374,6 +1376,47 @@ extern "C" {
 		DWORD *dwRxBytes
 		);
 
+	FTD2XX_API
+		FT_STATUS WINAPI FT_ComPortIdle(
+		FT_HANDLE ftHandle
+		);
+
+	FTD2XX_API
+		FT_STATUS WINAPI FT_ComPortCancelIdle(
+		FT_HANDLE ftHandle
+		);
+
+	FTD2XX_API
+		FT_STATUS WINAPI FT_VendorCmdGet(
+		FT_HANDLE ftHandle,
+		UCHAR Request,
+		UCHAR *Buf,
+		USHORT Len
+		);
+
+	FTD2XX_API
+		FT_STATUS WINAPI FT_VendorCmdSet(
+		FT_HANDLE ftHandle,
+		UCHAR Request,
+		UCHAR *Buf,
+		USHORT Len
+		);
+
+	FTD2XX_API
+		FT_STATUS WINAPI FT_VendorCmdGetEx(
+		FT_HANDLE ftHandle,
+		USHORT wValue,
+		UCHAR *Buf,
+		USHORT Len
+		);
+
+	FTD2XX_API
+		FT_STATUS WINAPI FT_VendorCmdSetEx(
+		FT_HANDLE ftHandle,
+		USHORT wValue,
+		UCHAR *Buf,
+		USHORT Len
+		);
 
 #ifdef __cplusplus
 }

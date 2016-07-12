@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 #include "../../ftd2xx.h"
 #include <pthread.h>
 
@@ -38,28 +39,28 @@ void *read_watch(void *pArgs)
 	char 	cBufWrite[BUF_SIZE];
 	FT_HANDLE	ftHandle = (FT_HANDLE)pArgs;
 		
-	sleep(1);
+	usleep(1);
 	printf("FT_W32_WriteFile\n");
 	FT_W32_WriteFile(ftHandle, cBufWrite, BUF_SIZE, &dwBytesWritten, NULL);
 	printf("FT_W32_WriteFile done\n");
+    
+    return NULL;
 }
 
 int main(int argc, char *argv[])
 {
 	pthread_t thread_id;
 	int iTestTXEmpty;
-	char 	cBufWrite[BUF_SIZE];
 	char * 	pcBufRead = NULL;
 	char * 	pcBufLD[MAX_DEVICES + 1];
 	char 	cBufLD[MAX_DEVICES][64];
-	DWORD	dwRxSize = 0;
-	DWORD 	dwBytesWritten, dwBytesRead, dwStat;
+	DWORD 	dwStat;
 	FT_STATUS	ftStatus;
 	int	iNumDevs = 0;
-	int	i, j;
-	int	iDevicesOpen;
+	int	i;
+	int	iDevicesOpen = 0;
 	DWORD dwMask, dwErrors;
-	FTDCB ftDCB, ftnewDCB;
+	FTDCB ftDCB;
 	FTCOMSTAT ftComstat;
 
 	if(argc > 1) {
@@ -80,9 +81,6 @@ int main(int argc, char *argv[])
 	if(ftStatus != FT_OK) {
 		printf("Error: FT_ListDevices(%d)\n", ftStatus);
 		return 1;
-	}
-	for(j = 0; j < BUF_SIZE; j++) {
-		cBufWrite[j] = j;
 	}
 	
 	for(i = 0; ( (i <MAX_DEVICES) && (i < iNumDevs) ); i++) {

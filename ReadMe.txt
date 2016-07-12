@@ -2,9 +2,8 @@ D2XX for Linux
 --------------
 
 As Linux distributions vary these instructions are a guide to installation 
-and use.  FTDI has tested the driver and samples with Ubuntu 12.04 (kernel 
-version 3.2) for i386 and x86_64, and Debian 6 'squeeze' (kernel version 
-2.6.32) for arm926.
+and use.  FTDI has tested the driver with Ubuntu 14.04 (kernel version 3.13) 
+for i386 and x86_64, and Raspbian 7 (kernel version 3.18) for arm-v6-hf.
 
 FTDI developed libftd2xx primarily to aid porting Windows applications 
 written with D2XX to Linux.  We intend the APIs to behave the same on
@@ -15,29 +14,32 @@ FTDI do not release the source code for libftd2xx.  If you prefer to work
 with source code and are starting a project from scratch, consider using
 the open-source libFTDI.
 
-libftd2xx uses an unmodified version of libusb 
-(http://sourceforge.net/projects/libusb/).  Source code for libusb is 
-included in the driver distribution.
+libftd2xx uses an unmodified version of libusb (http://libusb.info) which
+is distributed under the terms of the GNU Lesser General Public License 
+(see libusb/COPYING or http://www.gnu.org/licenses).  Source code for 
+libusb is included in this distribution.
 
 
 
 Installing the D2XX shared library and static library.
 ------------------------------------------------------
 
-1.  tar xfvz libftd2xx1.1.12.tar.gz
+1.  tar xfvz libftd2xx-x86_64-1.3.6.tgz
 
 This unpacks the archive, creating the following directory structure:
 
     build
-        arm926
-        i386
-        x86_64
+        libftd2xx        (re-linkable objects)
+        libusb           (re-linkable objects)
+        libftd2xx.a      (static library)
+        libftd2xx.so.1.3.6   (dynamic library)
+        libftd2xx.txt    (platform-specific information)
     examples
-    libusb
+    libusb               (source code)
     ftd2xx.h
     WinTypes.h
 
-2.  cd build/arm926
+2.  cd build
 
 3.  sudo -s 
   or, if sudo is not available on your system: 
@@ -46,17 +48,17 @@ This unpacks the archive, creating the following directory structure:
 Promotes you to super-user, with installation privileges.  If you're
 already root, then step 3 (and step 7) is not necessary.
 
-4.  cp lib* /usr/local/lib
+4.  cp libftd2xx.* /usr/local/lib
 
 Copies the libraries to a central location.
 
-5.  chmod 0755 /usr/local/lib/libftd2xx.so.1.1.12
+5.  chmod 0755 /usr/local/lib/libftd2xx.so.1.3.6
 
 Allows non-root access to the shared object.
 
-6.  ln -sf /usr/local/lib/libftd2xx.so.1.1.12 /usr/local/lib/libftd2xx.so
+6.  ln -sf /usr/local/lib/libftd2xx.so.1.3.6 /usr/local/lib/libftd2xx.so
 
-Creates a symbolic link to the 1.1.12 version of the shared object.
+Creates a symbolic link to the 1.3.6 version of the shared object.
 
 7.  exit
 

@@ -6,7 +6,7 @@ APP = w32_escapeseq
 all: $(APP)
 
 $(APP): main.c	
-	$(CC) -o $(APP) $(CFLAGS) main.c
+	$(CC) main.c -o $(APP) $(CFLAGS)
 	
 clean:
 	rm -f *.o ; rm $(APP)

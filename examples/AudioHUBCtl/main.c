@@ -11,7 +11,9 @@
 
 int main(int argc, char *argv[])
 {
+
 	DWORD dwBytesInQueue = 0;
+
 	FT_STATUS	ftStatus;
 	FT_HANDLE	ftHandle;
 	unsigned char originalMode;
@@ -20,8 +22,7 @@ int main(int argc, char *argv[])
 	char mask[8];
 	int i;
 	char mask_value = 0x00;
-	
-	if(argc == 3 || strlen(argv[2])!=8) {
+	if(argc == 3 && strlen(argv[2])==8) {
 		sscanf(argv[1], "%d", &iport);
 		strncpy(mask, argv[2], 8);
 		
@@ -36,8 +37,8 @@ int main(int argc, char *argv[])
 	else {
 		printf("Usage: audiohub_ctl port_id bit_mask\n");
 		iport = 0;
+		exit(1);
 	}
-	
 	ftStatus = FT_Open(iport, &ftHandle);
 	if(ftStatus != FT_OK) {
 		/* 

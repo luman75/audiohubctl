@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 #include "../../ftd2xx.h"
 
 #define BUF_SIZE 16
@@ -32,12 +33,11 @@ void quit()
 	exit(1);
 }
 
-int main()
+int main(void)
 {
 	char 	cBufWrite[BUF_SIZE];
 	char * 	pcBufLD[MAX_DEVICES + 1];
 	char 	cBufLD[MAX_DEVICES][64];
-	DWORD	dwRxSize = 0;
 	DWORD 	dwBytesWritten, dwBytesRead, dwErrors, dwRead;
 	FT_STATUS	ftStatus;
 	int	iNumDevs = 0;
@@ -140,7 +140,7 @@ int main()
 			return 1;
 		}
 	
-		sleep(1);	// give it a chance to be received in a loopback test
+		usleep(1);	// give it a chance to be received in a loopback test
 		
 		if(FT_W32_ClearCommError(ftHandle[i], &dwErrors, &ftComStat) == FALSE) {
 			ftStatus = FT_W32_GetLastError(ftHandle[i]);

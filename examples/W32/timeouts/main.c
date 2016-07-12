@@ -41,14 +41,12 @@ int main()
 	char * 	pcBufRead = NULL;
 	char * 	pcBufLD[MAX_DEVICES + 1];
 	char 	cBufLD[MAX_DEVICES][64];
-	DWORD	dwRxSize = 0;
-	DWORD 	dwBytesWritten, dwBytesRead, dwErrors;
+	DWORD 	dwBytesRead;
 	FT_STATUS	ftStatus;
 	int	iNumDevs = 0;
 	int	i, j;
 	int	iDevicesOpen;
 	FTDCB ftDCB, ftnewDCB;
-	FTCOMSTAT ftComStat;
 	FTTIMEOUTS ftTimouts, ftnewTimouts;
 	struct timeval tv;
 	struct timezone	tz;
@@ -150,13 +148,13 @@ int main()
 			if(FT_W32_ReadFile(ftHandle[i], cBufWrite, BUF_SIZE, &dwBytesRead, NULL) == FALSE) {
 				ftStatus = FT_W32_GetLastError(ftHandle[i]);
 				gettimeofday(&tv, &tz);
-				printf("%d secs, %d usecs\n", tv.tv_sec, tv.tv_usec);
+				printf("%d secs, %d usecs\n", (int)tv.tv_sec, (int)tv.tv_usec);
 //				printf("Error FT_W32_ReadFile = %d)\n", ftStatus);
 //				return 1;
 			}
 			else if(dwBytesRead != BUF_SIZE) {
 				gettimeofday(&tv, &tz);
-				printf("%d secs, %d usecs\n", tv.tv_sec, tv.tv_usec);
+				printf("%d secs, %d usecs\n", (int)tv.tv_sec, (int)tv.tv_usec);
 			}
 		}
 		

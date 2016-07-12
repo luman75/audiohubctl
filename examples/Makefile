@@ -1,10 +1,24 @@
 # which compiler
 CC = gcc
 
-SUBDIRS = BitMode EEPROM/erase EEPROM/read EEPROM/write EEPROM/user/read \
-	  EEPROM/user/size EEPROM/user/write Events LargeRead MultiThread \
-	  SetVIDPID Simple Timeouts \
-	  
+SUBDIRS = \
+	BitMode \
+	EEPROM/erase \
+	EEPROM/read \
+	EEPROM/write \
+	EEPROM/user/read \
+	EEPROM/user/size \
+	EEPROM/user/write \
+	Events \
+	LargeRead \
+	MultiThread \
+	SetVIDPID \
+	Timeouts \
+	W32/escapeseq \
+	W32/events \
+	W32/simple \
+	W32/timeouts
+
 all: subdirs
 
 subdirs:
